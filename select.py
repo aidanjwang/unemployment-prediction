@@ -93,8 +93,7 @@ def select():
                        index_col=["CPSIDP", "MISH"], usecols=SELECT)
     
     # Generate date var
-    cps["DATE"] = pd.to_datetime(
-            cps[["YEAR", "MONTH"]].assign(day=1)).dt.to_period("M")
+    cps["DATE"] = pd.to_datetime(cps[["YEAR", "MONTH"]].assign(day=15))
     
     # Get each individual's next survey emp status and date
     cps.sort_index(inplace=True)
