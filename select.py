@@ -87,11 +87,14 @@ SELECT = [
 ]
 
 
-def select():
+def read():
     # Read in raw data, keeping selected vars
     cps = pd.read_csv(os.path.join(settings.DATA_DIR, "cps.csv"),
                        index_col=["CPSIDP", "MISH"], usecols=SELECT)
-    
+    return cps
+
+
+def select(cps):
     # Generate date var
     cps["DATE"] = pd.to_datetime(cps[["YEAR", "MONTH"]].assign(day=15))
     
@@ -119,11 +122,22 @@ def select():
     print(cps["F_EMPSTAT"].value_counts(
             normalize=True, sort=False, dropna=False))
     
-    # Save processed data
+    return cps
+
+
+def clean(cps):
+    # TODO: clean variables based on codebook
+    return cps
+
+
+def write(cps):
     cps.to_csv(os.path.join(settings.PROCESSED_DIR, "unemp_exits.csv"))
     
     
 if __name__ == "__main__":
-    select()
+    cps = read()
+    cps = select(cps)
+    cps = clean(cps)
+    write(cps)
     
     
