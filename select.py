@@ -21,7 +21,6 @@ SELECT = [
     "METAREA",
     "COUNTY",
     "CBSASZ",
-    "METFIPS",
     "INDIVIDCC",
     "FAMINC",
     "NFAMS",
@@ -91,6 +90,7 @@ def read():
     # Read in raw data, keeping selected vars
     cps = pd.read_csv(os.path.join(settings.DATA_DIR, "cps.csv"),
                        index_col=["CPSIDP", "MISH"], usecols=SELECT)
+    
     return cps
 
 
@@ -125,8 +125,20 @@ def select(cps):
     return cps
 
 
-def clean(cps):
-    # TODO: clean variables based on codebook
+def drop_missings(cps):
+    # Drop obs missing these vars
+    cps = cps[cps["REGION"]!=97]
+    cps = cps[cps["STATEFIP"]!=99]
+    cps = cps[cps["METRO"]!=9]
+    cps = cps[cps["METAREA"]!=9999]
+    cps = cps[~cps["FAMINC"].isin([995, 999])]
+    cps = cps[cps["RACE"]!=999]
+    cps = cps[cps["FAMSIZE"]!=0]
+    cps = cps[cps["FTYPE"]!=9]
+    cps = cps[cps["CLASSWKR"]!=99]
+    cps = cps[cps["DURUNEMP"]!=999]
+    cps = cps[cps["EDUC"]!=999]
+                  
     return cps
 
 
@@ -137,7 +149,7 @@ def write(cps):
 if __name__ == "__main__":
     cps = read()
     cps = select(cps)
-    cps = clean(cps)
+    cps = drop_missings(cps)
     write(cps)
     
     
