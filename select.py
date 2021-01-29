@@ -61,9 +61,6 @@ SELECT = [
     "OCC2010",
     "IND1990",
     "CLASSWKR",
-    "UHRSWORKT",
-    "UHRSWORK1",
-    "UHRSWORK2",
     "DURUNEMP",
     "WHYUNEMP",
     "WKSTAT",
@@ -95,8 +92,8 @@ def read():
 
 
 def select(cps):
-    # Generate date var
-    cps["DATE"] = pd.to_datetime(cps[["YEAR", "MONTH"]].assign(day=15))
+    # Generate date var. Survey usually administered in week of the 12th
+    cps["DATE"] = pd.to_datetime(cps[["YEAR", "MONTH"]].assign(day=12))
     
     # Get each individual's next survey emp status and date
     cps.sort_index(inplace=True)
@@ -115,7 +112,7 @@ def select(cps):
                 cps["F_EMPSTAT"].notna() &
                 ~cps["F_EMPSTAT"].isin([00, 20, 21, 22])]
     
-    print("\nVALUE COUNTS IN PROCESSED DATA")
+    print("\nVALUE COUNTS AFTER SELECTION")
     print("OBS:", cps.shape[0])
     print(cps["EMPSTAT"].value_counts(
             normalize=True, sort=False, dropna=False))

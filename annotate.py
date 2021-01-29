@@ -6,6 +6,7 @@ Created on Thu Jan 21 18:55:30 2021
 
 import os
 import pandas as pd
+from sklearn.model_selection import train_test_split
 import settings
 
 
@@ -17,11 +18,13 @@ def read():
 
 
 def adjust_dates(unemp_exits):
-    # TODO: edit for individuals exiting unemp into NILF
     # Get duration of unemp at end: halfway between current and next survey
     unemp_exits["DURUNEMP_END"] = unemp_exits["DURUNEMP"] + (
             (unemp_exits["F_DATE"] - unemp_exits["DATE"]).dt.days / 7) / 2
-    
+    # Hard code max duration of unemp for indivudals that exit unemp into NILF
+    unemp_exits.loc[~unemp_exits["F_EMPSTAT"].isin([10, 12]), 
+                    "DURUNEMP_END"] = 146
+            
     # Get date and ages at start of unemp
     unemp_exits["YEAR_START"] = (
             unemp_exits["DATE"] 
@@ -45,11 +48,68 @@ def adjust_dates(unemp_exits):
     
 
 def prepare_variables(unemp_exits):
+    # Convert categorical vars to dummies
+    unemp_exits = pd.get_dummies(unemp_exits, columns=[
+            "HHTENURE",
+            "GQTYPE",
+            "REGION",
+            "STATEFIP",
+            "METRO",
+            "METAREA",
+            "COUNTY",
+            "CBSASZ",
+            "INDIVIDCC",
+            "FAMINC",
+            "RELATE",
+            "SEX",
+            "RACE",
+            "MARST",
+            "POPSTAT",
+            "VETSTAT",
+            "PEMOMTYP",
+            "PEDADTYP",
+            "FTYPE",
+            "BPL",
+            "YRIMMIG",
+            "CITIZEN",
+            "MBPL",
+            "FBPL",
+            "NATIVITY",
+            "HISPAN",
+            "OCC2010",
+            "IND1990",
+            "CLASSWKR",
+            "WHYUNEMP",
+            "WKSTAT",
+            "PROFCERT",
+            "STATECERT",
+            "JOBCERT",
+            "WRKOFFER",
+            "EDUC",
+            "EDCYC",
+            "EDDIPGED",
+            "EDHGCGED",
+            "SCHLCOLL",
+            "DIFFHEAR",
+            "DIFFEYE",
+            "DIFFREM",
+            "DIFFPHYS",
+            "DIFFMOB",
+            "DIFFCARE",
+            "DIFFANY",
+            "MONTH_START"], drop_first=True)
+    
+    # Convert vars of person being in same household to dummies
+    for var in ["MOMLOC", "MOMLOC2", "POPLOC", "POPLOC2", "SPLOC", "PECOHAB"]:
+        unemp_exits[var] = (unemp_exits[var] != 0).astype(int)
+    
     return unemp_exits
 
 
 def write(unemp_exits):
-    return
+    train, test = train_test_split(unemp_exits, random_state=1)
+    train.to_csv(os.path.join(settings.PROCESSED_DIR, "train.csv"))
+    test.to_csv(os.path.join(settings.PROCESSED_DIR, "test.csv"))
 
 
 if __name__ == "__main__":
