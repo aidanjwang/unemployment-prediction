@@ -101,29 +101,25 @@ def select(cps):
             ["EMPSTAT", "DATE"]].shift(-1)
 
     # Keep obs where individual is unemp and exits in next survey
-    print("VALUE COUNTS IN RAW DATA")
-    print("OBS:", cps.shape[0])
-    print(cps["EMPSTAT"].value_counts(
-            normalize=True, sort=False, dropna=False))
-    print(cps["F_EMPSTAT"].value_counts(
-            normalize=True, sort=False, dropna=False))
+    print("VALUE COUNTS BEFORE SELECTION")
+    print(cps["EMPSTAT"].value_counts(sort=False, dropna=False))
+    print(cps["F_EMPSTAT"].value_counts(sort=False, dropna=False))
     
     cps = cps[cps["EMPSTAT"].isin([20, 21, 22]) &
                 cps["F_EMPSTAT"].notna() &
                 ~cps["F_EMPSTAT"].isin([00, 20, 21, 22])]
     
-    print("\nVALUE COUNTS AFTER SELECTION")
-    print("OBS:", cps.shape[0])
-    print(cps["EMPSTAT"].value_counts(
-            normalize=True, sort=False, dropna=False))
-    print(cps["F_EMPSTAT"].value_counts(
-            normalize=True, sort=False, dropna=False))
+    print("VALUE COUNTS AFTER SELECTION")
+    print(cps["EMPSTAT"].value_counts(sort=False, dropna=False))
+    print(cps["F_EMPSTAT"].value_counts(sort=False, dropna=False))
     
     return cps
 
 
 def drop_missings(cps):
     # Drop obs missing these vars
+    print("OBS BEFORE DROPPING MISSINGS:", cps.shape[0])
+    
     cps = cps[cps["REGION"]!=97]
     cps = cps[cps["STATEFIP"]!=99]
     cps = cps[cps["METRO"]!=9]
@@ -135,7 +131,9 @@ def drop_missings(cps):
     cps = cps[cps["CLASSWKR"]!=99]
     cps = cps[cps["DURUNEMP"]!=999]
     cps = cps[cps["EDUC"]!=999]
-                  
+    
+    print("OBS AFTER DROPPING MISSINGS:", cps.shape[0])       
+       
     return cps
 
 

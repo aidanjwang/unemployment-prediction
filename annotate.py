@@ -38,6 +38,11 @@ def adjust_dates(unemp_exits):
             unemp_exits["DURUNEMP"] / 52.143)
     unemp_exits["YNGCH_START"] = unemp_exits["YNGCH"] - round(
             unemp_exits["DURUNEMP"] / 52.143)
+    # For child age at start of unemp, replace with 99 (NIU) if no child
+    unemp_exits.loc[(unemp_exits["ELDCH_START"] < 0) | 
+            (unemp_exits["ELDCH"]==99), "ELDCH_START"] = 99
+    unemp_exits.loc[(unemp_exits["YNGCH_START"] < 0) | 
+            (unemp_exits["YNGCH"]==99), "YNGCH_START"] = 99
     
     # Drop unnecessary vars and unadjusted date vars
     unemp_exits.drop(columns=["DURUNEMP", "DATE", "F_DATE", "EMPSTAT", 
@@ -97,7 +102,9 @@ def prepare_variables(unemp_exits):
             "DIFFMOB",
             "DIFFCARE",
             "DIFFANY",
-            "MONTH_START"], drop_first=True)
+            "MONTH_START",
+            "ELDCH_START",
+            "YNGCH_START"], drop_first=True)
     
     # Convert vars of person being in same household to dummies
     for var in ["MOMLOC", "MOMLOC2", "POPLOC", "POPLOC2", "SPLOC", "PECOHAB"]:
