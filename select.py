@@ -1,4 +1,8 @@
 """
+Select from downloaded data the necessary variables and observations 
+corresponding to individuals exiting unemployment. Drop missings. Save 
+processed data at processed/unemp_exits.csv.
+
 Created on Sat Jan 16 10:36:02 2021
 
 @author: aidan

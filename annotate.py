@@ -1,4 +1,8 @@
 """
+Annotate processed data by adjusting variables to correspond to start and end
+of unemployment spell and preparing variables for prediction models. Split 
+prepared data and save at processed/train.csv and processed/test.csv.
+
 Created on Thu Jan 21 18:55:30 2021
 
 @author: aidan
