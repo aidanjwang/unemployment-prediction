@@ -23,7 +23,7 @@ Predict duration of unemployment for individuals using data from the Current Pop
 	1. Run `python select.py` to select necessary variables and observations corresponding to individuals exiting unemployment, drop missings, and save at `processed/unemp_exits.csv`.
 	2. Run `python annotate.py` to annotate processed data by adjusting variables dates and preparing for prediction models, split and save at `processed/train.csv` and `processed/test.csv`.
 
-### Extending This
+# Extending This
 1. Implement the predictions for the duration of unemployment for individuals using the processed data.
 
 [^1]: IPUMS-CPS, University of Minnesota, [www.ipums.org](www.ipums.org).
